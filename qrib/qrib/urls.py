@@ -21,8 +21,10 @@ from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('agent/', include('ai_agent.urls')),
     path('auth/token/refresh/',
          jwt_views.TokenRefreshView.as_view(),
          name='token_refresh'),
     path('auth/', include('auth.urls')),
+    path('profiles/', include('profiles.urls')),
 ]

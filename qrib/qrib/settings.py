@@ -61,7 +61,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ai_agent.apps.AiAgentConfig',
     'auth.apps.AuthConfig',
+    'profiles.apps.ProfilesConfig',
     'rest_framework',
 ]
 
@@ -75,6 +77,11 @@ REST_FRAMEWORK = {
         'request_otp': os.getenv('QRIB_REQUEST_OTP_RATE', '5/min'),
         'verify_otp': os.getenv('QRIB_VERIFY_OTP_RATE', '10/min'),
     },
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 }
 
 MIDDLEWARE = [
@@ -112,8 +119,12 @@ WSGI_APPLICATION = 'qrib.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.getenv("DJANGO_DB_NAME", BASE_DIR / 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'qrib'),
+        'USER': os.getenv('POSTGRES_USER', 'qrib'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'change-me'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 
@@ -165,3 +176,6 @@ QRIB_RETURN_OTP_IN_RESPONSE = _get_bool_env(
     "QRIB_RETURN_OTP_IN_RESPONSE",
     default=DEBUG,
 )
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+QRIB_AGENT_MODEL = os.getenv("QRIB_AGENT_MODEL", "gpt-4.1-mini")

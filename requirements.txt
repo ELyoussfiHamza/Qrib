@@ -1,0 +1,5 @@
+Django==5.2.15
+djangorestframework==3.17.1
+djangorestframework-simplejwt==5.5.1
+openai>=1.99.0
+psycopg[binary]>=3.2.0

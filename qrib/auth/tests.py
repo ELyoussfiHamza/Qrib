@@ -45,6 +45,32 @@ class PhoneOtpAuthTests(APITestCase):
         self.assertEqual(me_response.status_code, status.HTTP_200_OK)
         self.assertEqual(me_response.data["phone_number"], phone_number)
 
+    def test_refresh_token_returns_new_access_token(self):
+        phone_number = "+212600000002"
+
+        request_response = self.client.post(
+            "/auth/request-otp/",
+            {"phone_number": phone_number},
+            format="json",
+        )
+        verify_response = self.client.post(
+            "/auth/verify-otp/",
+            {
+                "phone_number": phone_number,
+                "code": request_response.data["otp"],
+            },
+            format="json",
+        )
+
+        refresh_response = self.client.post(
+            "/auth/token/refresh/",
+            {"refresh": verify_response.data["refresh"]},
+            format="json",
+        )
+
+        self.assertEqual(refresh_response.status_code, status.HTTP_200_OK)
+        self.assertIn("access", refresh_response.data)
+
     def test_verify_otp_rejects_invalid_code(self):
         phone_number = "+212600000001"
 
